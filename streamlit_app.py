@@ -1,18 +1,44 @@
 import streamlit as st
-from langchain.llms import OpenAI
+from dotenv import load_dotenv
+import os
+import requests
 
-st.title('🦜🔗 Quickstart App')
+load_dotenv('secret.env')
 
-openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
+st.title('🦜🔗 Chat App')
 
-def generate_response(input_text):
-    llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key)
-    st.info(llm(input_text))
+# Create function to get response from API
+def get_response(input_text):
+    headers = {
+        'x-tenant-id': os.getenv('X_TENANT_ID'),
+        'x-secret-key': os.getenv('X_SECRET_KEY'),
+        'x-api-username': os.getenv('X_USERNAME')
+    }
+    body = {
+        "request_id": "unique_request_id",
+        "timestamp": 1691719379113,
+        "user_prompt": input_text,
+        "input_variables": {
+        "name": "spellvault"
+        }
+    }
+    response = requests.post("https://spellvault-gt.stg.mngd.int.engtools.net/ext/completion/ShlK3iTaYO", headers=headers, json=body).json()
+    return response
 
-with st.form('my_form'):
-    text = st.text_area('Enter text:', 'What are the three key pieces of advice for learning how to code?')
-    submitted = st.form_submit_button('Submit')
-    if not openai_api_key.startswith('sk-'):
-        st.warning('Please enter your OpenAI API key!', icon='⚠')
-    if submitted and openai_api_key.startswith('sk-'):
-        generate_response(text)
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if prompt := st.chat_input("What is up?"):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        response = get_response(prompt)
+        response_content = response["chat_history"][1]["content"]
+        st.markdown(response_content)
+    st.session_state.messages.append({"role": "assistant", "content": response_content})
