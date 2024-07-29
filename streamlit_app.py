@@ -18,14 +18,8 @@ def get_response(input_text):
         "name": "spellvault"
         }
     }
-    try:
-        response = requests.post("https://spellvault-gt.stg.mngd.int.engtools.net/ext/completion/ShlK3iTaYO", headers=headers, json=body, timeout=10)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        return response.json()
-    except requests.exceptions.Timeout:
-        return {"error": "Request timed out"}
-    except requests.exceptions.RequestException as e:
-        return {"error": str(e)}
+    response = requests.post("https://spellvault-gt.stg.mngd.int.engtools.net/ext/completion/ShlK3iTaYO", headers=headers, json=body)
+    return response.json()
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
