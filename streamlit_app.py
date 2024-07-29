@@ -1,18 +1,14 @@
 import streamlit as st
-from dotenv import load_dotenv
-import os
 import requests
-
-load_dotenv('secret.env')
 
 st.title('🦜🔗 PAX-MEX Chat App')
 
 # Create function to get response from API
 def get_response(input_text):
     headers = {
-        'x-tenant-id': os.getenv('X_TENANT_ID'),
-        'x-secret-key': os.getenv('X_SECRET_KEY'),
-        'x-api-username': os.getenv('X_USERNAME')
+        'x-tenant-id': st.secrets['X_TENANT_ID'],
+        'x-secret-key': st.secrets['X_SECRET_KEY'],
+        'x-api-username': st.secrets['X_USERNAME']
     }
     body = {
         "request_id": "unique_request_id",
