@@ -1,8 +1,18 @@
 import streamlit as st
 from get_response_spellvault import get_response_content_spellvault
 from get_response_azure import get_response_content_azure
+from css_style import get_css_style
+
+style = get_css_style()
+
+# Inject the CSS style
+st.markdown(style, unsafe_allow_html=True)
 
 st.title('🦜🔗 PAX-MEX Chat App')
+
+# Add a custom text box outside of st.markdown
+st.markdown('<div class="custom-text-box">Heads up! Our AI is still learning, so there might be a hiccup or two. Your keen eye for detail is important to us – please double-check any changes.</div>', unsafe_allow_html=True)
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
