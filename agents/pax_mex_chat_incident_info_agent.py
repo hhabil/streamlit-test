@@ -66,7 +66,7 @@ class PaxMexChatIncidentInfoAgent(AgentExecutor):
         )
 
         tools = [incident_info_loader_tool]
-        llm_with_tools = get_azure_openai_model(tools=tools, model_name="gpt-35-turbo", temperature=0.2)
+        llm_with_tools = get_azure_openai_model(tools=tools, model_name="gpt-4-32k", temperature=0.7)
 
         # The following pipe operators are essentially LangChain Expression Language (LCEL)
         # that used for defines the agent's behavior.
