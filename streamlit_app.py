@@ -35,19 +35,18 @@ for message in st.session_state.messages:
             st.markdown(message["content"])
 
 if prompt := st.chat_input("What is up?"):
+    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    with st.spinner('Waiting for response...'):
-        # Create input object for the agent
-        input_data = PaxMexChatIncidentInfoAgentInput(input=prompt, chat_history=st.session_state.messages)
-        
-        # Get response from the agent
-        response = agent.invoke(input_data.dict(), output_key="output")
-        
-        response_content = response["output"]
 
     with st.chat_message("assistant", avatar=BOT_AVATAR):
+        with st.spinner('Waiting for response...'):
+            # Create input object for the agent
+            input_data = PaxMexChatIncidentInfoAgentInput(input=prompt, chat_history=st.session_state.messages)
+            
+            # Get response from the agent
+            response = agent.invoke(input_data.dict(), output_key="output")
+            
+            response_content = response["output"]
         st.markdown(response_content)
     st.session_state.messages.append({"role": "assistant", "content": response_content})
