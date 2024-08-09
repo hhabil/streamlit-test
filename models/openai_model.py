@@ -1,10 +1,10 @@
-from typing import Optional, Sequence
-import streamlit as st
 from enum import Enum
+import streamlit as st
+from typing import Optional, Sequence, List
 
 from langchain_community.tools import BaseTool
 from langchain_core.runnables import Runnable
-from langchain_openai import AzureChatOpenAI
+from langchain_openai import ChatOpenAI
 
 endpoint = st.secrets["AZURE_CHAT_ENDPOINT"]
 deployment = st.secrets["DEPLOYMENT_NAME"]
@@ -15,7 +15,7 @@ version = st.secrets["OPENAI_API_VERSION"]
 # token_provider = st.secrets["OPENAI_API_KEY"]
 # version = st.secrets["OPENAI_API_VERSION"]
 
-class GrabGPTAzureOpenAIModel(str, Enum):
+class GrabGPTOpenAIModel(str, Enum):
     """
     Refer https://helix.engtools.net/docs/default/component/integrating_llm_apps_with_grabgpt_developer_guide/onboard-getting-started-connect-your-apps-to-llm_test/#what-available-models-can-i-choose-from
     """
@@ -26,24 +26,25 @@ class GrabGPTAzureOpenAIModel(str, Enum):
     GPT4_32K = "gpt-4-32k"
     GPT4_TURBO = "gpt-4-turbo"
     GPT4_TURBO_VISION = "gpt-4-turbo-vision"
+    GPT4O = "gpt-4o"
     ADA_002 = "text-embedding-ada-002"
 
     def __str__(self) -> str:
         return str(self.value)
 
-def get_azure_openai_model(
-    model_name: Optional[GrabGPTAzureOpenAIModel] = GrabGPTAzureOpenAIModel.GPT4_32K,
+
+def get_openai_model(
+    model_name: Optional[GrabGPTOpenAIModel] = GrabGPTOpenAIModel.GPT4_32K,
     timeout: Optional[int] = 60,
     tools: Optional[Sequence[BaseTool]] = None,
     temperature: Optional[float] = 0.7,
 ) -> Runnable:
     """return AzureChatOpenAI model with tools."""
 
-    azure_chat_openai = AzureChatOpenAI(
-        azure_endpoint=endpoint,
-        api_version=version,
+    azure_chat_openai = ChatOpenAI(
+        base_url=endpoint + "/v1",
         api_key=token_provider,
-        azure_deployment=model_name.__str__(),
+        model_name=model_name.__str__(),
         timeout=timeout,
         temperature=temperature,
         streaming=True,

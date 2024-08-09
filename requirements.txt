@@ -8,3 +8,5 @@ requests
 pandas
 langchain_core
 langserve
+typing_extensions
+langgraph
