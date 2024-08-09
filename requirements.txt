@@ -5,8 +5,8 @@ langchain_community
 langchain-openai==0.1.9
 python-dotenv==1.0.1
 requests
-# pandas
-# langchain_core
-# langserve
-# typing_extensions
-# langgraph
+pandas
+langchain_core
+langserve
+typing_extensions
+langgraph
